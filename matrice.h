@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "vecteur.h"
 
@@ -53,6 +55,7 @@ class Matrice
 
     public :
         static Matrice identite ( unsigned int size );
+        static Matrice tensoriel (const Vecteur& A, const Vecteur& B);
 };
 
 Matrice operator* ( const double lambda, const Matrice& M );

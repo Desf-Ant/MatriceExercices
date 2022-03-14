@@ -27,7 +27,11 @@ int main(int argc, char *argv[])
     Vecteur vecPropre = M.powerIteration();
     vecPropre.affiche();
 
-//    M.eigenAnalysis();
+    M.calculValeurPropreAssociee(vecPropre);
+    Vecteur vecPropreMax = M.getVecteurValeursPropres();
+    vecPropreMax.affiche();
+
+    M.eigenAnalysis();
 //    for ( unsigned int i = 0 ; i < 5 ; i++ )
 //    {
 //        Vecteur produit = M.getValeurPropre(i) * M.getVecteurPropre(i);

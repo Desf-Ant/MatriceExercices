@@ -169,10 +169,9 @@ Vecteur Matrice::powerIteration ( void )
 {
     // Power iteration pour le calcul de la plus grande valeur propre
     // M.vect = lambda.vect
-
     Vecteur v = Vecteur(this->getNbLignes());
     for (int i=0; i<(int)v.getTaille();i++) {
-        v.setCoeff(i, arc4random()%100);
+        v.setCoeff(i, rand()%100);
     }
     Vecteur vold = Vecteur(v);
     for (int i=0; i < 100; i++) {
@@ -182,15 +181,24 @@ Vecteur Matrice::powerIteration ( void )
             break;
         }
         vold = Vecteur(v);
-    }
 
+    }
     return v;
 }
 
 double Matrice::calculValeurPropreAssociee ( Vecteur v )
 {
     // Trouve la valeur propre associée au vecteur v par division
-    return 0.0;
+    Vecteur vect_l = Vecteur(this->getNbLignes());
+    double valeur = 0;
+    this->lesValeursPropres.clear();
+    vect_l = *this*v;
+    for (int i=0; i <(int)v.getTaille(); i++){
+        valeur = vect_l.getCoeff(i) / v.getCoeff(i);
+        this->lesValeursPropres.push_back(valeur);
+        // std::cout << valeur << std::endl;
+    }
+    return valeur;
 }
 
 void Matrice::ordonneValeurPropre ( void )
@@ -268,13 +276,62 @@ void Matrice::eigenAnalysis ( void )
     this->lesValeursPropres.clear();
 
     // Calcul de la paire propre la plus grande
+    Matrice copieM = *this;
+    /*Vecteur vect = copieM.powerIteration();
 
+    double value = copieM.calculValeurPropreAssociee(vect);
+    this->lesValeursPropres.push_back(value);
+    Vecteur vecPropreMax = copieM.getVecteurValeursPropres();
+    this->lesVecteursPropres.push_back(vecPropreMax);
+
+    double norme = vecPropreMax.getNorme();
+    double ln = (value / (norme*norme));
+    Matrice tens = this->tensoriel(vecPropreMax, vecPropreMax);
+
+    Matrice Mprime = (copieM) - (ln * this->tensoriel(vecPropreMax, vecPropreMax));
+    Mprime.affiche();
+    */
+
+    // Recherche des autres paires
+    for (int i=0; i < copieM.getNbLignes(); i++){
+        Vecteur vect = copieM.powerIteration();
+
+        double value = copieM.calculValeurPropreAssociee(vect);
+        this->lesValeursPropres.push_back(value);
+        Vecteur vecPropreMax = copieM.getVecteurValeursPropres();
+        this->lesVecteursPropres.push_back(vecPropreMax);
+
+        double norme = vecPropreMax.getNorme();
+        double ln = (value / (norme*norme));
+        Matrice tens = this->tensoriel(vecPropreMax, vecPropreMax);
+
+        Matrice Mprime = (copieM) - (ln * this->tensoriel(vecPropreMax, vecPropreMax));
+
+        copieM = Mprime;
+
+        Mprime.affiche();
+
+    }
+
+    for (int i=0; i < copieM.getNbLignes(); i++){
+        this->lesValeursPropres.at(i) = abs(this->lesValeursPropres.at(i));
+        std::cout << this->lesValeursPropres.at(i) << std::endl;
+        this->lesVecteursPropres.at(i).affiche();
+    }
+
+    std::sort(this->lesValeursPropres.begin(),this->lesValeursPropres.end());
+
+    /* Vérification des valeurs propres
+     *
+     * for (int i=0; i < copieM.getNbLignes(); i++){
+        std::cout << this->lesValeursPropres.at(i) << std::endl;
+    }
+    */
 
     // Itération inverse pour la paire propre la plus proche de zéro
 
-
-    // Recherche des autres paires
-
+    double valPropreMini = this->lesValeursPropres.at(0);
+    std::cout << "la valeur propre mini en abs est " << valPropreMini << std::endl;
 
     // Vérification que toutes les paires ont été trouvés et sinon valeur propre = 0 et vecteur propre est nul
     if ( this->lesValeursPropres.size() < this->getNbLignes() )
@@ -460,3 +517,13 @@ Matrice operator- ( const Matrice& A, const Matrice& B )
     return res;
 }
 
+Matrice Matrice::tensoriel(const Vecteur& A, const Vecteur& B){
+    Matrice tensor = Matrice(A.getTaille());
+    for (int i=0; i < A.getTaille() ; i++){
+        for (int j=0; j < A.getTaille() ; j++){
+            double vall = A.getCoeff(i)*B.getCoeff(j);
+            tensor.setCoeff(i, j, vall);
+        }
+    }
+    return tensor;
+}
