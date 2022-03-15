@@ -32,17 +32,17 @@ int main(int argc, char *argv[])
     vecPropreMax.affiche();
 
     M.eigenAnalysis();
-//    for ( unsigned int i = 0 ; i < 5 ; i++ )
-//    {
-//        Vecteur produit = M.getValeurPropre(i) * M.getVecteurPropre(i);
-//        Vecteur transfo = M * M.getVecteurPropre(i);
+    for ( unsigned int i = 0 ; i < 5 ; i++ )
+    {
+        Vecteur produit = M.getValeurPropre(i) * M.getVecteurPropre(i);
+        Vecteur transfo = M * M.getVecteurPropre(i);
 
-//        std::cout << M.getValeurPropre(i) << " -> ";
-//        produit.affiche();
-//        std::cout << M.getValeurPropre(i) << " -> ";
-//        transfo.affiche();
-//        std::cout << std::endl;
-//    }
+        std::cout << M.getValeurPropre(i) << " -> ";
+        produit.affiche();
+        std::cout << M.getValeurPropre(i) << " -> ";
+        transfo.affiche();
+        std::cout << std::endl;
+    }
 
     return 0;
 }
